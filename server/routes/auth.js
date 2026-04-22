@@ -10,6 +10,7 @@ const path = require('path');
 
 
 const api = process.env.DEV_URL;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const { User } = require('../../schemas & model/userSchema');
 const errorHandler = require('../../middleware/errorHandler');
@@ -45,7 +46,7 @@ const handleErrors = (err) => {
 const maxAge = 3 * 24 * 60 * 60;
 
 const createToken = (id) => {
-    return jwt.sign({ id }, 'al-maequl', {
+    return jwt.sign({ id }, JWT_SECRET, {
         expiresIn: maxAge
     });
 
@@ -54,7 +55,7 @@ const createToken = (id) => {
 //Routes
 
 //auth checking          
-router.get(`${api}/authchecking`,checkUser);
+router.get(`${api}/authchecking`, checkUser);
 
 //SIGN UP Or Register 
 
@@ -72,7 +73,6 @@ router.post(`${api}/signup`, async (req, res) => {
     catch (err) {
         console.log(req.body)
         let error = handleErrors(err);
-        console.log(err);
 
         res.status(400).json({ error });
     }
@@ -101,7 +101,9 @@ router.get(`${api}/logout`, async (req, res) => {
 
     try {
 
-        res.cookie('jwt', '', { httpOnly: true, maxAge: 1 });
+        res.cookie('jwt', '', { httpOnly: true, maxAge: 1 }); //we are replacing the jwt 
+        // with a blank token at very short expiry time 
+        // so that the user is logged out
         res.status(200).json();
     }
     catch (err) {

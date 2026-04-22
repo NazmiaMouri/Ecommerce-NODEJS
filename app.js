@@ -2,7 +2,6 @@ require('dotenv').config();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const express = require('express');
-const expressLayout = require('express-ejs-layouts');
 const { default: mongoose } = require('mongoose');
 const { checkUser } = require('./middleware/authMiddleware');
 
@@ -18,7 +17,7 @@ app.use(bodyParser.json());
 
 
 
-app.use('/', require('./server/routes/main'))
+// app.use('/', require('./server/routes/main'))
 app.use('/', require('./server/routes/auth'))
 app.use(express.json());
 

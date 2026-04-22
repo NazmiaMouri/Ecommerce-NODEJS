@@ -1,11 +1,12 @@
 const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const requireAuth = (req, res, next) => {
     const token = req.cookie.jwt;
 
-    //check json is verified
+    //check token is verified
     if (token) {
-        jwt.verify(token, 'al-maequl', (err, decodedToken) => {
+        jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
             if (err) {
                 console.log(err.message);
                 res.redirect(`${api}/login`);
@@ -31,7 +32,7 @@ const checkUser = (req, res, next) => {
         console.log(token);
 
         if (token) {
-            jwt.verify(token, 'al-maequl', async (err, decodedToken) => {
+            jwt.verify(token, JWT_SECRET, async (err, decodedToken) => {
                 if (err) {
                     console.log(err.message);
                     next();
