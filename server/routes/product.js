@@ -1,19 +1,44 @@
-//Routes
-
+const express = require('express');
 const { requireAuth } = require("../../middleware/authMiddleware");
+const { Dress } = require('../../schemas & model/productSchema');
+const cookieParser = require("cookie-parser");
+const router = express.Router();
+const api = process.env.DEV_URL;
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
+const app = express();
 
+app.use(cookieParser());
+
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
 
 
 //get All dresses
-router.get(`${api}/dresses`, requireAuth, (req, res) => {
+router.get(`${api}/dresses`, requireAuth, async (req, res) => {
+    console.log(req.cookies);
 
-    Dress.find().then((result) =>
-        res.send(result)
-    );
+    try {
+        const result = await Dress.find();
+        console.log(result);
+        res.send(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err });
+    }
+}
 
 
-
-});
+);
 
 // get the specific dress
 router.get(`${api}/dress`, requireAuth, (req, res) => {
@@ -52,3 +77,4 @@ router.post(`${api}/dress`, upload.single('image'), (req, res) => {
 
 
 })
+module.exports = router;
