@@ -22,6 +22,8 @@ const requireAuth = (req, res, next) => {
                 res.redirect(`${api}/login`);
 
             } else {
+                req.user = decodedToken.id;
+                // res.send(decodedToken);
                 console.log(decodedToken);
                 next();
             }

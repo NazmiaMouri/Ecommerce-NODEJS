@@ -25,7 +25,7 @@ const upload = multer({ storage: storage });
 
 //get All dresses
 router.get(`${api}/dresses`, requireAuth, async (req, res) => {
-    console.log(req.cookies);
+    console.log(req.body);
 
     try {
         const result = await Dress.find();
@@ -41,11 +41,20 @@ router.get(`${api}/dresses`, requireAuth, async (req, res) => {
 );
 
 // get the specific dress
-router.get(`${api}/dress`, requireAuth, (req, res) => {
+router.get(`${api}/dress/:productId`, requireAuth, (req, res) => {
+    try {
+        console.log(req.params.productId);
+        const productId = req.params.productId;
+        const dress = Dress.findOne(productId);
+        if (!dress) {
+            return res.status(404).json({ message: "Dress not found" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err });
+    }
 
-    Dress.findOne().then((result) =>
-        res.send(result)
-    );
+
 
 
 

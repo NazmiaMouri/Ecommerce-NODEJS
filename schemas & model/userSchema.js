@@ -18,7 +18,36 @@ const userSchema = new Schema({
       required: [true, 'Please enter a password'],
       minlength: [6, 'Minimum password length is 6 character'],
    },
-   address: String
+   address: [
+      {
+         label: String,
+         city: String,
+         postalCode: String,
+         country: String,
+         houseNo: String,
+         roadNo: String,
+         area: String,
+         notetorider: String
+
+      }],
+      wishlist: [
+         {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Dress'
+         }
+      ],
+      cart: [
+         {
+            productId: {
+               type: mongoose.Schema.Types.ObjectId,
+               ref: 'Dress'
+            },
+            quantity: {
+               type: Number,
+               default: 1
+            }
+         }
+      ]
 })
 
 // hashing password and then saving it to DB
