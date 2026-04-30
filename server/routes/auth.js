@@ -47,7 +47,7 @@ const handleErrors = (err) => {
 
 }
 
-const maxAge = 3 * 24 * 60 * 60;
+const maxAge = 30 * 24 * 60 * 60;
 
 const createToken = (id) => {
     return jwt.sign({ id }, JWT_SECRET, {

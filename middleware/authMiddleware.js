@@ -50,6 +50,7 @@ const checkUser = (req, res, next) => {
 
                 if (err) {
                     console.log("error: " + err.message);
+                    res.status(404).json({ "message": `${err.message}` });
                     next();
                 } else {
                     console.log(decodedToken);
@@ -61,11 +62,11 @@ const checkUser = (req, res, next) => {
 
             })
         } else {
-            res.status(200).json({ "message": "user not found" });
+            res.status(404).json({ "message": "user not found" });
             next();
         }
     } else {
-        res.status(200).json(user);
+        res.status(404).json({ "message": "user not found" });
         next();
     }
 
