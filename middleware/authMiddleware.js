@@ -16,14 +16,17 @@ const requireAuth = (req, res, next) => {
     console.log(token);
     //check token is verified
     if (token) {
-        jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
+        jwt.verify(token, JWT_SECRET, async (err, decodedToken) => {
             if (err) {
                 console.log(err.message);
-                res.redirect(`${api}/login`);
 
             } else {
-                req.user = decodedToken.id;
-                // res.send(decodedToken);
+                const user = await User.findById(decodedToken.id);
+                req.user = user; // 🔥 attach user to req object for use in next middleware/routes
+                if (!user) {
+                    return res.status(404).json({ message: "User not found" });
+                }
+
                 console.log(decodedToken);
                 next();
             }
@@ -33,12 +36,11 @@ const requireAuth = (req, res, next) => {
     }
 }
 
-//check current user
+//check current user and fetch all the user data except password and populate cart and order details
 
 const checkUser = (req, res, next) => {
     console.log(req.cookie);
     console.log(req.url)
-    let user = null;
     if (req.headers.cookie != undefined) {
         const token = req.headers.cookie;
         console.log('==========================================================')
@@ -54,8 +56,18 @@ const checkUser = (req, res, next) => {
                     next();
                 } else {
                     console.log(decodedToken);
-                    user = await User.findById(decodedToken.id);
+                   
+                    const user = await User.findById(decodedToken.id)
+                        .select('-password') // keep all user fields except password
+                        .populate({
+                            path: 'cart.productId',
+                            model: 'Dress',
+                            // pick only what you need
+                        })
+                      
+                        console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
                     console.log(user);
+
                     res.status(200).json(user);
                     next();
                 }

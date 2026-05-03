@@ -30,24 +30,25 @@ const userSchema = new Schema({
          notetorider: String
 
       }],
-      wishlist: [
-         {
+   wishlist: [
+      {
+         type: mongoose.Schema.Types.ObjectId,
+         ref: 'Dress'
+      }
+   ],
+  
+   cart: [
+      {
+         productId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Dress'
+         },
+         quantity: {
+            type: Number,
+            default: 1
          }
-      ],
-      cart: [
-         {
-            productId: {
-               type: mongoose.Schema.Types.ObjectId,
-               ref: 'Dress'
-            },
-            quantity: {
-               type: Number,
-               default: 1
-            }
-         }
-      ]
+      }
+   ]
 })
 
 // hashing password and then saving it to DB

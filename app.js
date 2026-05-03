@@ -20,6 +20,7 @@ app.use(bodyParser.json());
 // app.use('/', require('./server/routes/main'))
 app.use('/', require('./server/routes/auth'))
 app.use('/', require('./server/routes/product'))
+app.use('/', require('./server/routes/order'))
 
 mongoose.connect('mongodb://127.0.0.1:27017/al-maequl').then((result)=> console.log('connected to db'));
 app.listen(PORT, () => {

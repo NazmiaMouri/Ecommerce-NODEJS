@@ -72,7 +72,7 @@ router.put(`${api}/editprofile`, requireAuth, async (req, res) => {
 
     try {
         const userId = req.user.id; // 🔥 get user ID from req.user set in requireAuth middleware
-        const user = await User.findById(userId);   
+        const user = await User.findById(userId);
         if (!user) return res.status(404).json({ message: "User not found" });
 
         user.name = name || user.name;
@@ -113,40 +113,18 @@ router.post(`${api}/add/address`, requireAuth, async (req, res) => {
         res.status(500).json({ message: 'Failed to add address' });
     }
 });
-// POST /cart/add
-router.post(`${api}/cart/add`,
-    requireAuth, async (req, res) => {
-        const cart = null;
-        try {
-            const { productId, quantity = 1 } = req.body;
-            const user = req.user; // 🔥 get user from req.user set in requireAuth middleware
-            if (!user) return res.status(404).json({ message: "User not found" });
 
-            // check if product already in cart
-            const existingItem = user.cart.find(item =>
-                item.productId.toString() === productId
-            );
-
-            if (existingItem) {
-                existingItem.quantity += quantity;
-            } else {
-                cart = user.cart.push({
-                    productId,
-                    quantity
-                });
-            }
-
-            await user.save();
-
-            res.status(200).json({
-                message: "Added to cart successfully",
-                cart: cart
-            });
-
-        } catch (err) {
-            res.status(500).json({ message: err.message });
-        }
-    });
+//GET /cart
+router.get(`${api}/cart`, requireAuth, async (req, res) => {
+    try {
+        const user = req.user; // 🔥 get user from req.user set in requireAuth middleware
+        if (!user) return res.status(404).json({ message: "User not found" });
+        const cartList = await User.find({ userId: req.user._id }).populate('products.productId');
+        res.status(201).json(cartList);
 
 
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 module.exports = router;
