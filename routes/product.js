@@ -1,6 +1,6 @@
 const express = require('express');
-const { requireAuth } = require("../../middleware/authMiddleware");
-const { Dress } = require('../../schemas & model/productSchema');
+const { requireAuth } = require("../middleware/authMiddleware");
+const { Dress } = require('../schemas & model/productSchema');
 const cookieParser = require("cookie-parser");
 const router = express.Router();
 const api = process.env.DEV_URL;

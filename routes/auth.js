@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const { checkUser } = require("../../middleware/authMiddleware");
+const { checkUser } = require("../middleware/authMiddleware");
 
 const path = require('path');
 const cookieParser = require("cookie-parser");
@@ -13,8 +13,8 @@ const cookieParser = require("cookie-parser");
 const api = process.env.DEV_URL;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const { User } = require('../../schemas & model/userSchema');
-const errorHandler = require('../../middleware/errorHandler');
+const { User } = require('../schemas & model/userSchema');
+const errorHandler = require('../middleware/errorHandler');
 
 
 // use middleware
@@ -47,14 +47,7 @@ const handleErrors = (err) => {
 
 }
 
-const maxAge = 30 * 24 * 60 * 60;
 
-const createToken = (id) => {
-    return jwt.sign({ id }, JWT_SECRET, {
-        expiresIn: maxAge
-    });
-
-}
 
 //Routes
 
@@ -94,7 +87,7 @@ router.post(`${api}/login`, async (req, res) => {
         const token = createToken(user._id);
         res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
 
-        user.password = null; // 🔥 remove password before sending user data
+
         res.status(200).json(user);
 
     }

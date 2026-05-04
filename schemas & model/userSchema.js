@@ -54,6 +54,7 @@ const userSchema = new Schema({
 // hashing password and then saving it to DB
 
 userSchema.pre('save', async function (next) {
+   if (!this.isModified('password')) return next(); // only hash if password is new or modified
    const salt = await bcrypt.genSalt();
    this.password = await bcrypt.hash(this.password, salt);
    next();

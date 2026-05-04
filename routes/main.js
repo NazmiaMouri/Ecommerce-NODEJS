@@ -12,7 +12,7 @@ const cookieParser = require('cookie-parser');
 
 const api = process.env.DEV_URL;
 
-const { Dress } = require('../../schemas & model/productSchema')
+const { Dress } = require('../schemas & model/productSchema')
 const UPLOAD_FOLDER = "../../public/uploads/";
 
 // Multer configuration for file storage

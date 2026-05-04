@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const router = express.Router();
-const { requireAuth } = require("../../middleware/authMiddleware");
+const { requireAuth } = require("../middleware/authMiddleware");
 const { Order } = require('../../schemas & model/orderSchema');
 const cookieParser = require("cookie-parser");
 
