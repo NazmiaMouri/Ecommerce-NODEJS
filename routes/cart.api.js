@@ -10,11 +10,11 @@ const api = process.env.DEV_URL;
 
 // POST /cart/add
 router.post(`${api}/cart/add`,
-    requireAuth, cartController.addToCart);
+    requireAuth, cartController.addToCartController);
 
 // POST /cart/remove
 router.post(`${api}/cart/remove`,
-    requireAuth, cartController.deleteFromCart);
+    requireAuth, cartController.deleteFromCartController);
 
 module.exports = router;
 

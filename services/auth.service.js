@@ -3,7 +3,7 @@ const { verifyToken, createToken } = require("../utils/auth");
 
 
 //AUTHORIZATION checking
-async function authCheck(token) {
+async function authCheckService(token) {
     if (!token) throw new Error('Unauthorized');
 
     const decodedToken = verifyToken(token);
@@ -28,7 +28,7 @@ async function authCheck(token) {
 }
 
 //LOGIN
-async function login(email, password) {
+async function loginService(email, password) {
     try {
         const user = await User.login(email, password);
         const token = createToken(user._id);
@@ -43,7 +43,7 @@ async function login(email, password) {
 
 }
 //SIGNUP
-async function signup(userName, phoneNumber, email, password) {
+async function signupService(userName, phoneNumber, email, password) {
     try {
         const user = await User.create({
             userName, phoneNumber, email, password
@@ -59,8 +59,10 @@ async function signup(userName, phoneNumber, email, password) {
 
 }
 
+
+
 module.exports = {
-    login,
-    authCheck,
-    signup
+    loginService,
+    authCheckService,
+    signupService
 }

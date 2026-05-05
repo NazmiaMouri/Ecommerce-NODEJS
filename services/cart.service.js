@@ -1,5 +1,5 @@
 //addToCart
-async function addToCart(user, productId, quantity) {
+async function addToCartService(user, productId, quantity) {
     let cart = null;
 
     if (!user) throw new Error('User not found');
@@ -23,7 +23,7 @@ async function addToCart(user, productId, quantity) {
 }
 
 //Delete from cart
-async function deleteFromCart(productId, user) {
+async function deleteFromCartService(productId, user) {
 
 
     if (!user) throw new Error('User not found');
@@ -40,6 +40,6 @@ async function deleteFromCart(productId, user) {
     await user.save(); // Implementation for adding product to cart
 }
 module.exports = {
-    addToCart,
-    deleteFromCart
+    addToCartService,
+    deleteFromCartService
 };
