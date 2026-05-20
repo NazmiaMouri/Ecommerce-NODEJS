@@ -1,5 +1,6 @@
-const { User } = require("../schemas & model/userSchema");
-const { verifyToken, createToken } = require("../utils/auth");
+import User from "../schemas & model/userSchema.js";
+import AppError from "../utils/AppError.js";
+import { verifyToken, createToken } from "../utils/auth.util.js";
 
 
 //AUTHORIZATION checking
@@ -8,52 +9,32 @@ async function authCheckService(token) {
 
     const decodedToken = verifyToken(token);
     console.log(decodedToken);
-    try {
-        const user = await User.findById(decodedToken.id)
-            .select('-password') // keep all user fields except password
-            .populate({
-                path: 'cart.productId',
-                model: 'Dress',
-                // pick only what you need
-            })
 
-        console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-        console.log(user);
+    return await User.findById(decodedToken.id)
+        .select('-password') // keep all user fields except password
+        .populate({
+            path: 'cart.productId',
+            model: 'Dress',
+            // pick only what you need
+        })
 
-        return user;
-    }
-    catch (err) {
-        throw new Error(err);
-    }
 }
 
 //LOGIN
 async function loginService(email, password) {
-    try {
-        const user = await User.login(email, password);
-        const token = createToken(user._id);
-
-        return token;
-    }
-    catch (err) {
-        throw new Error(err);
-    }
+    return await User.login(email, password);
 
 
 
 }
 //SIGNUP
 async function signupService(userName, phoneNumber, email, password) {
-    try {
-        const user = await User.create({
-            userName, phoneNumber, email, password
-        })
-        const token = createToken(user._id);
-        return token;
-    }
-    catch (err) {
-        throw new Error(err);
-    }
+
+    return await User.create({
+        userName, phoneNumber, email, password
+    })
+
+
 
 
 
@@ -61,7 +42,7 @@ async function signupService(userName, phoneNumber, email, password) {
 
 
 
-module.exports = {
+export default {
     loginService,
     authCheckService,
     signupService

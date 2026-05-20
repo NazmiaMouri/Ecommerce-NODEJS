@@ -1,6 +1,9 @@
-const { Schema, default: mongoose } = require("mongoose");
-const { isEmail } = require('validator');
-const bcrypt = require('bcrypt');
+import { Schema, mongoose } from "mongoose";
+import validator from "validator";
+
+const { isEmail } = validator;
+import bcrypt from "bcrypt";
+import AppError from "../utils/AppError.js";
 
 
 const userSchema = new Schema({
@@ -36,7 +39,7 @@ const userSchema = new Schema({
          ref: 'Dress'
       }
    ],
-  
+
    cart: [
       {
          productId: {
@@ -54,27 +57,33 @@ const userSchema = new Schema({
 // hashing password and then saving it to DB
 
 userSchema.pre('save', async function (next) {
-   if (!this.isModified('password')) return next(); // only hash if password is new or modified
+   console.log("PASSWORD MODIFIED:", this.isModified('password'));
+   console.log("PASSWORD VALUE:", this.password);
+   if (!this.isModified('password') || !this.password) {
+      return next();
+   }
    const salt = await bcrypt.genSalt();
    this.password = await bcrypt.hash(this.password, salt);
    next();
 })
 //static function to login the user,comparing the password and email with the one in DB
 userSchema.statics.login = async function (email, password) {
-   console.log(email, password);
-   const user = await this.findOne({ email });
-   console.log(user);
-   if (user) {
-      const auth = await bcrypt.compare(password, user.password);
-      if (auth) {
-         return user;
-      }
-      throw Error('incorrect password');
-   }
-   throw Error('incorrect email')
+    const user = await this.findOne({ email });
+
+    if (!user) {
+        throw new AppError("Incorrect email", 401);
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+        throw new AppError("Incorrect password", 401);
+    }
+
+    return user;
+};
 
 
-}
+const User = mongoose.model('User', userSchema);
 
-
-exports.User = mongoose.model('User', userSchema);
+export default User;

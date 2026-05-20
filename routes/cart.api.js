@@ -1,12 +1,11 @@
-const { requireAuth } = require("../middleware/authMiddleware");
-const cartController = require("../controllers/cart.controller");
-
-const express = require('express');
+import { requireAuth } from "../middleware/authMiddleware.js";
+import cartController from "../controllers/cart.controller.js";
+import express from "express";
+import { api } from "../utils/environment_variables.js";
 const router = express.Router();
 
 
 
-const api = process.env.DEV_URL;
 
 // POST /cart/add
 router.post(`${api}/cart/add`,
@@ -16,7 +15,7 @@ router.post(`${api}/cart/add`,
 router.post(`${api}/cart/remove`,
     requireAuth, cartController.deleteFromCartController);
 
-module.exports = router;
+export default router;
 
 // //Add to cart
 // router.post('/cart/add', requireAuth,

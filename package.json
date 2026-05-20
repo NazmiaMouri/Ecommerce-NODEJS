@@ -2,7 +2,8 @@
   "name": "al-maequl",
   "version": "1.0.0",
   "description": "clothing brand app",
-  "main": "index.js",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "server.js",
@@ -27,7 +28,8 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "path": "^0.12.7",
-    "validator": "^13.12.0"
+    "validator": "^13.12.0",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

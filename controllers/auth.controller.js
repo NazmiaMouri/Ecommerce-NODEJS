@@ -1,54 +1,72 @@
-const authService = require('../services/auth.service');
-const { createToken } = require('../utils/auth');
+import authService from "../services/auth.service.js";
+import AppError from "../utils/AppError.js";
+import { createToken } from "../utils/auth.util.js";
+import { sendSuccess } from "../utils/responseHandler.js";
 
 const maxAge = 30 * 24 * 60 * 60;
 
 
 //AUTH CHECKING
 const authCheckController = async (req, res) => {
-    try {
-        const user = authService.authCheck(req.headers.cookie);
-        res.status(200).json(user);
+    //try {
+    const user = await authService.authCheckService(req.headers.cookie);
+    if (!user) {
+        throw new AppError("No user found", 401);
     }
-    catch (err) {
-        res.status(401).json({ error: err.message });
-    }
+    console.log(user);
+    sendSuccess(res, {
+        message: "auth successful",
+        data:  user 
+    });
 }
 
 //LOGIN
 const loginController = async (req, res) => {
     const { email, password } = req.body;
-    try {
-        const user = await authService.loginService(email, password);
-        const token = createToken(user._id);
-        res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-        res.status(200).json({ token });
+
+    const user = await authService.loginService(email, password);
+    if (!user) {
+        throw new AppError("No user found", 401);
     }
-    catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+
+
+    const token = createToken(user._id);
+    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+    sendSuccess(res, {
+        message: "login successful",
+        data:  user 
+    });
+
+
 }
 
 //SIGNUP
 const signupController = async (req, res) => {
     const { email, password } = req.body;
-    try {
-        const user = await authService.signup(email, password);
-        const token = createToken(user._id);
-        res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-        res.status(201).json({ token });
+    //try {
+    const user = await authService.signup(email, password);
+    if (!user) {
+        throw new AppError("No user found", 401);
     }
-    catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+    const token = createToken(user._id);
+    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+    sendSuccess(res, {
+        message: "signup successful",
+        data:  user 
+    });
+
 }
 //LOGOUT
 const logoutController = (req, res) => {
     res.cookie('jwt', '', { httpOnly: true, maxAge: 1 });
-    res.status(200).json({ message: 'Logged out successfully' });
+    sendSuccess(res, {
+        message: 'Logged out successfully',
+        data: {}
+    });
+
 }
 
-module.exports = {
+export default {
     loginController,
     logoutController,
     authCheckController,

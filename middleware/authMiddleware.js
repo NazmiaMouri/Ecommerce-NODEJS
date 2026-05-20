@@ -1,15 +1,14 @@
 
-const express = require('express');
+import express from "express";
 const app = express();
-const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET;
-const cookieParser = require("cookie-parser");
-const { User } = require('../schemas & model/userSchema');
-const { verifyToken } = require('../utils/auth');
+import cookieParser from "cookie-parser";
+import  User  from "../schemas & model/userSchema.js";
+import  {verifyToken}  from "../utils/auth.util.js";
+import { JWT_SECRET } from "../utils/environment_variables.js";
 
 
 app.use(cookieParser());
-const requireAuth = async (req, res, next) => {
+export const requireAuth = async (req, res, next) => {
 
     const token = req.headers.cookie;
     //check token is verified
@@ -33,7 +32,7 @@ const requireAuth = async (req, res, next) => {
 
 //check current user and fetch all the user data except password and populate cart and order details
 
-const checkUser = (req, res, next) => {
+export const checkUser = (req, res, next) => {
     console.log(req.cookie);
     console.log(req.url)
     if (req.headers.cookie != undefined) {
@@ -78,4 +77,3 @@ const checkUser = (req, res, next) => {
     }
 
 }
-module.exports = { requireAuth, checkUser };

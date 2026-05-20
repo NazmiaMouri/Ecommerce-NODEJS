@@ -1,40 +1,32 @@
-const { Dress } = require("../schemas & model/productSchema");
+import Dress from "../schemas & model/productSchema.js";
+import AppError from "../utils/AppError.js";
 
 //GET ALL DRESSES
 async function getAllDressesService() {
-    try {
-        const dresses = await Dress.find();
-        return dresses;
-    } catch (err) {
-        throw new Error(err);
-    }
+    return await Dress.find();
+
 }
 
 //GET A DRESS
 async function getDressByIdService(productId) {
-    try {
-        const dress = await Dress.findOne({ _id: productId });
-        if (!dress) {
-            throw new Error("Dress not found");
-        }
-        return dress;
-    } catch (err) {
-        throw new Error(err);
-    }
-}  
+    if (!productId) {
+        throw new AppError('Invalid product id', 400);
 
-//POST A DRESS TO DB
-async function createDressService(dressData) {
-    try {
-        const dress = await Dress.create(dressData);
-        return dress;
-    } catch (err) {
-        throw new Error(err);
     }
+    return await Dress.findOne({ _id: productId });
 }
 
-module.exports = {
-    getAllDressesService,
-    getDressByIdService,
-    createDressService
-};
+
+
+    //POST A DRESS TO DB
+    async function createDressService(dressData) {
+        return dress = await Dress.create(dressData);
+
+    }
+          
+
+    export default {
+        getAllDressesService,
+        getDressByIdService,
+        createDressService
+    };

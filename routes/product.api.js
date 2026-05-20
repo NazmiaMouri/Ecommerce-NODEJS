@@ -1,16 +1,13 @@
-const express = require('express');
-const { requireAuth } = require("../middleware/authMiddleware");
-const { Dress } = require('../schemas & model/productSchema');
-const ProductController = require('../controllers/product.controller');
-const cookieParser = require("cookie-parser");
+import express from "express";
+import { requireAuth } from "../middleware/authMiddleware.js";
+import  Dress  from "../schemas & model/productSchema.js";
+import ProductController from "../controllers/product.controller.js";
+import cookieParser from "cookie-parser";
 const router = express.Router();
-const api = process.env.DEV_URL;
-const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
-const app = express();
-
-app.use(cookieParser());
+import multer from "multer";
+import fs from "fs";
+import path from "path";
+import { api } from "../utils/environment_variables.js";
 
 //Set up multer for file uploads
 const storage = multer.diskStorage({
@@ -31,7 +28,7 @@ router.get(`${api}/dresses`, requireAuth, ProductController.getAllDressesControl
 router.get(`${api}/dress/:productId`, requireAuth, ProductController.getDressByIdController);
 
 //Create a new product
-router.post(`${api}/dress`, requireAuth, upload.single('image'), ProductController.createDressController);      
+router.post(`${api}/dress`, requireAuth, upload.single('image'), ProductController.createDressController);
 
 
 
@@ -98,4 +95,4 @@ router.post(`${api}/dress`, requireAuth, upload.single('image'), ProductControll
 
 
 // })
-module.exports = router;
+export default router;

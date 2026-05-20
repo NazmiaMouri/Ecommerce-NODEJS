@@ -1,22 +1,23 @@
 
-const express = require('express');
+import express from "express";
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const { checkUser } = require("../middleware/authMiddleware");
-const authController = require("../controllers/auth.controller");
-const path = require('path');
-const cookieParser = require("cookie-parser");
+import jwt from "jsonwebtoken";
+import { checkUser } from "../middleware/authMiddleware.js";
+import authController from "../controllers/auth.controller.js";
+import path from "path";
+import cookieParser from "cookie-parser";
 
 
 
-const api = process.env.DEV_URL;
-const JWT_SECRET = process.env.JWT_SECRET;
-
-const { User } = require('../schemas & model/userSchema');
-const errorHandler = require('../middleware/errorHandler');
 
 
+import  User  from "../schemas & model/userSchema.js";
+//import errorHandler from "../middleware/errorHandler.js";
+import catchAsync from "../utils/catchAsync.js";
+import { api } from "../utils/environment_variables.js";
 
+
+console.log(process.env.DEV_URL, api)
 
 
 //handle error
@@ -49,23 +50,23 @@ const handleErrors = (err) => {
 //Routes
 
 //auth checking          
-router.get(`${api}/authchecking`, authController.authCheckController);
+router.get(`${api}/authchecking`,catchAsync( authController.authCheckController));
 
 //SIGN UP Or Register 
-router.post(`${api}/signup`, authController.signupController);
+router.post(`${api}/signup`, catchAsync(authController.signupController));
 
 //LOGIN
-router.post(`${api}/login`, authController.loginController);
+router.post(`${api}/login`, catchAsync(authController.loginController));
 
 //LOGOUT
-router.get(`${api}/logout`, authController.logoutController);
+router.get(`${api}/logout`, catchAsync(authController.logoutController));
 
 
 
 // router.post(`${api}/signup`, async (req, res) => {
 //     const { userName, phoneNumber, email, password, address } = req.body;
 //     console.log(req.url);
-//     try {
+//     //////try {
 //         const user = await User.create({
 //             userName, phoneNumber, email, password, address
 //         })
@@ -122,4 +123,4 @@ router.get(`${api}/logout`, authController.logoutController);
 //         res.status(400).json({ error });
 //     }
 // })
-module.exports = router;
+export default router;

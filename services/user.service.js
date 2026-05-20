@@ -1,61 +1,77 @@
-const { User } = require('../schemas & model/userSchema');
+import  User  from "../schemas & model/userSchema.js";
 
 //get user profile
 async function getUserProfileService(userId) {
-    try {
-        const user = await User.findById(userId);
-        if (!user) throw new Error('No User Found');
+    
+      return await User.findById(userId);
 
-    } catch (err) {
-        throw new Error(err);
-    }
+  
 
 }
 // Edit Profile
-async function editProfileService(updatedUser) {
+async function editProfileService(userId, updateData) {
 
+    // remove restricted fields
+    delete updateData.password;
+    delete updateData.role;
 
-    const user = await User.findById(updatedUser._id);
-
-    if (!user) {
-        throw new Error('User not found');
+    // optional sanitization
+    if (updateData.email) {
+        updateData.email = updateData.email.trim().toLowerCase();
     }
 
-    // update only if provided
-    user.userName = updatedUser.userName;
-    user.email = updatedUser.email;
+    if (updateData.userName) {
+        updateData.userName = updateData.userName.trim();
+    }
 
+    // check duplicate email
+    if (updateData.email) {
+        const existingUser = await User.findOne({
+            email: updateData.email,
+            _id: { $ne: userId }
+        });
 
-    await user.save();
+        if (existingUser) {
+            const error = new Error('Email already in use');
+            error.statusCode = 409;
+            throw error;
+        }
+    }
 
-    return user
-};
+    // PATCH update
+    const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { $set: updateData },
+        {
+            new: true,
+            runValidators: true
+        }
+    ).select('-password');
+
+    if (!updatedUser) {
+        const error = new Error('User not found');
+        error.statusCode = 404;
+        throw error;
+    }
+
+    return updatedUser;
+}
 
 //get user specific cart data
 async function getCartService(userId) {
-    try {
-        const cartList = await User.find({ userId: userId }).populate('products.productId');
-        return cartList;
-    } catch (err) {
-        throw new Error(err);
-    }
-
+   return await User.find({ userId: userId }).populate('products.productId');
+    
 }
 
 //add user delivery address
-async function addUserAddressService(userId) {
-    try {
-        const user = await User.findById(userId);
-        if (!user) throw new Error('No User found');
-
-        user.address.push(address);
-        await user.save();
-        return user;
-    } catch (err) {
-        throw new Error(err)
-    }
+async function addUserAddressService(userId, address) {
+    return await User.findByIdAndUpdate(
+        userId,
+        { $push: { address } },
+        { new: true, runValidators: true }
+    );
 }
-module.exports = {
+export default {
     getUserProfileService,
     editProfileService,
     getCartService,

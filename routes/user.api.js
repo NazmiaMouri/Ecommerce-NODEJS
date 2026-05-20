@@ -1,17 +1,15 @@
-const express = require('express');
+import express from "express";
 
 const router = express.Router();
-const { requireAuth } = require("../middleware/authMiddleware");
-const { Order } = require('../schemas & model/orderSchema');
-const cookieParser = require("cookie-parser");
+import { requireAuth } from "../middleware/authMiddleware.js";
+import  Order  from "../schemas & model/orderSchema.js";
+import cookieParser from "cookie-parser";
 
 
 const api = process.env.DEV_URL;
-const errorHandler = require('../middleware/errorHandler');
-const userController = require('../controllers/user.controller');
-
-
-const { User } = require('../schemas & model/userSchema');
+//import errorHandler from "../middleware/errorHandler.js";
+import userController from "../controllers/user.controller.js";
+import  User  from "../schemas & model/userSchema.js";
 
 // use middleware
 
@@ -139,4 +137,4 @@ router.post(`${api}/add/address`, requireAuth, userController.addUserAddressCont
 //         res.status(500).json({ message: err.message });
 //     }
 // });
-module.exports = router;
+export default router;

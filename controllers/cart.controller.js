@@ -1,30 +1,30 @@
-const cartService = require('../services/cart.service');
+import cartService from "../services/cart.service.js";
+import { sendSuccess } from "../utils/responseHandler.js";
 
 
 
 
 //Add TO CART
 const addToCartController = async (req, res) => {
-  try {
-    const cart = await cartService.addToCart(req.user, req.body.productId, req.body.quantity);
+ 
+    const cart = await cartService.addToCartService(req.user, req.body.productId, req.body.quantity);
     console.log('-----------------------------------------------------');
     console.log(cart);
-    res.status(200).json(cart);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+     sendSuccess(res, { statusCode: 200, message: 'cart added succcessfully', data: { cart } });
+
+  
 };
 
 //DELETE FROM CART
 const deleteFromCartController = async (req, res) => {
-  try {
-    const user = await cartService.deleteFromCart(req.body.productId, req.user);
-    res.status(200).json(user);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+
+  const user = await cartService.deleteFromCartService(req.body.productId, req.user);
+  sendSuccess(res, { statusCode: 200, message: 'deleted succcessfully', data: { user } });
+
+
+
 };
-module.exports = {
+export default {
   addToCartController,
   deleteFromCartController
 };

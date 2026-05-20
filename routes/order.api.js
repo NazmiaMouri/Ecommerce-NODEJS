@@ -1,15 +1,16 @@
-const express = require('express');
+import express from "express";
 const app = express();
 const router = express.Router();
-const { requireAuth } = require("../middleware/authMiddleware");
-const { Order } = require('../schemas & model/orderSchema');
-const cookieParser = require("cookie-parser");
-const ordersController = require('../controllers/order.controller');
+import { requireAuth } from "../middleware/authMiddleware.js";
+import  Order  from "../schemas & model/orderSchema.js";
+import cookieParser from "cookie-parser";
+import ordersController from "../controllers/order.controller.js";
 
 
-const api = process.env.DEV_URL;
-const errorHandler = require('../middleware/errorHandler');
-const { User } = require('../schemas & model/userSchema');
+
+//import errorHandler from "../middleware/errorHandler.js";
+import  User from "../schemas & model/userSchema.js";
+import { api } from "../utils/environment_variables.js";
 
 
 // use middleware
@@ -59,4 +60,4 @@ router.get(`${api}/orders`, requireAuth, ordersController.getUserOrdersControlle
 
 
 
-module.exports = router;
+export default router;
